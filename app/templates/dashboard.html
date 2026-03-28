@@ -1,0 +1,77 @@
+<!-- app/templates/dashboard.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Dashboard - Rozszerzone statystyki</h2>
+
+<div class="row mt-4">
+
+    <!-- Wykres kołowy - Departamenty -->
+    <div class="col-md-4">
+        <h5>Rozkład rezerwacji per departament</h5>
+        <canvas id="pieChart" width="300" height="300"></canvas>
+    </div>
+
+    <!-- Heatmapa -->
+    <div class="col-md-4">
+        <h5>Heatmapa popularności godzin</h5>
+        <canvas id="heatmapChart" width="300" height="300"></canvas>
+    </div>
+
+    <!-- Trend liniowy -->
+    <div class="col-md-4">
+        <h5>Trend rezerwacji (ostatnie 30 dni)</h5>
+        <canvas id="trendChart" width="300" height="300"></canvas>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    // Dane z backendu
+    const deptData = {{ department_data | tojson }};
+    const heatmapData = {{ heatmap_data | tojson }};
+    const trendData = {{ trend_data | tojson }};
+
+    // 1. Wykres kołowy
+    new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: deptData.map(item => item.department),
+            datasets: [{
+                data: deptData.map(item => item.count),
+                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545']
+            }]
+        }
+    });
+
+    // 2. Heatmapa (uproszczona jako bar chart)
+    new Chart(document.getElementById('heatmapChart'), {
+        type: 'bar',
+        data: {
+            labels: heatmapData.map(item => `D${item.day} ${item.hour}:00`),
+            datasets: [{
+                label: 'Liczba rezerwacji',
+                data: heatmapData.map(item => item.count),
+                backgroundColor: '#0d6efd'
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    // 3. Trend liniowy
+    new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+            labels: trendData.map(item => item.date),
+            datasets: [{
+                label: 'Liczba rezerwacji',
+                data: trendData.map(item => item.count),
+                borderColor: '#198754',
+                tension: 0.3
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+</script>
+{% endblock %}

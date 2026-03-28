@@ -1,0 +1,48 @@
+<!-- app/templates/rooms.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Lista sal</h2>
+
+<a href="{{ url_for('rooms.add') }}" class="btn btn-success mb-3">
+    + Dodaj nową salę
+</a>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Nazwa sali</th>
+            <th>Pojemność</th>
+            <th>Piętro</th>
+            <th>Cena/godz.</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for room in rooms %}
+        <tr>
+            <td><strong>{{ room.name }}</strong></td>
+            <td>{{ room.capacity }} osób</td>
+            <td>{{ room.floor }}</td>
+            <td>{{ room.hourly_rate }} zł</td>
+            <td>
+                <a href="#" class="btn btn-sm btn-danger"
+                   onclick="if(confirm('Na pewno usunąć salę {{ room.name }}?')) 
+                            window.location.href='{{ url_for('rooms.delete', room_id=room.id) }}'">
+                    Usuń
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="text-center text-muted py-4">
+                Nie ma jeszcze żadnych sal.<br>
+                Dodaj pierwszą salę używając przycisku powyżej.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="/" class="btn btn-secondary">← Powrót na stronę główną</a>
+{% endblock %}

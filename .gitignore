@@ -1,4 +1,24 @@
+# Środowisko wirtualne
 venv/
+.env
+
+# Pliki cache Pythona
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+
+# Pliki tymczasowe
+.DS_Store
+Thumbs.db
+
+# Pliki IDE
+.vscode/
+.idea/
+
+# Logi i bazy danych (opcjonalnie)
+*.log
+*.sqlite3
+
+# Pliki wygenerowane
+*.pdf
